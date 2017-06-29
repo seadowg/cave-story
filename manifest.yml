@@ -1,0 +1,4 @@
+---
+applications:
+- name: cave-story
+  command: node app.js
