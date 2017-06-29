@@ -12,8 +12,6 @@ let caveStory = (request, response) => {
       let action = app.getArgument('action');
       let thing = app.getArgument('thing');
 
-      console.log("Action: " + action + ", Thing: " + thing);
-
       if (action == 'look around' && thing == null) {
         app.ask('The cave is very dark but you can make out some small rocks ' +
         'scattered around the floor. Behind you you can just make out some light in ' +
