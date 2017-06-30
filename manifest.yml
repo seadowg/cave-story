@@ -1,4 +1,5 @@
 ---
 applications:
 - name: cave-story
-  command: node app.js
+  command: node node/app.js
+  buildpack: nodejs_buildpack

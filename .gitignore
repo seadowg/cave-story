@@ -56,3 +56,9 @@ typings/
 
 # dotenv environment variables file
 .env
+
+.gradle/
+build/
+node/
+*.iml
+.idea/
