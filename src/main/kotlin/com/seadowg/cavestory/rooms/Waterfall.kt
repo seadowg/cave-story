@@ -1,5 +1,6 @@
 package com.seadowg.cavestory.rooms
 
+import com.seadowg.cavestory.Script
 import com.seadowg.cavestory.engine.Operation
 import com.seadowg.cavestory.engine.Room
 import com.seadowg.cavestory.engine.State
@@ -8,13 +9,13 @@ class Waterfall : Room {
 
     override val name = "waterfall"
 
-    override fun perform(operation: Operation): State {
+    override fun perform(operation: Operation, script: Script): State {
         return if (operation.action == "look around" && operation.thing == null) {
-            State(this, "Oh look a waterfall!")
+            State(this, script.ohLookAWaterfall)
         } else if (operation.action == "wash" && operation.thing == "waterfall") {
-            State(this, "You emerge from the waterfall sparkling clean. This changes nothing.")
+            State(this, script.emergeFromTheWaterfall)
         } else {
-            State(this, "You try that and it doesn\'t work.")
+            State(this, script.doesntWork)
         }
     }
 }

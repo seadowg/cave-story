@@ -1,3 +1,4 @@
+import com.seadowg.cavestory.Script
 import com.seadowg.cavestory.apiai.Action
 import com.seadowg.cavestory.apiai.ApiAi
 import com.seadowg.cavestory.apiai.Context
@@ -55,12 +56,12 @@ class Fallback : Action {
     }
 }
 
-class RoomAction(private val room: Room): Action {
+class RoomAction(private val room: Room, private val script: Script): Action {
     override fun handle(apiAi: ApiAi) {
         val nextState = room.perform(Operation(
                 apiAi.getArgument("action")!!,
                 apiAi.getArgument("thing")
-        ))
+        ), script)
 
         apiAi.setContext("in_" + nextState.room.name, 1)
         apiAi.ask(nextState.prompt)
@@ -75,9 +76,11 @@ fun main(args: Array<String>) {
         val JSApiAiApp = require("actions-on-google").ApiAiApp
         val app = JSApiAiWrapper(js("new JSApiAiApp({ request: req, response: res })"))
 
+        val script = Script()
+
         app.handleRequest(mapOf(
-                "cave_1" to RoomAction(Cave1()),
-                "waterfall" to RoomAction(Waterfall()),
+                "cave_1" to RoomAction(Cave1(), script),
+                "waterfall" to RoomAction(Waterfall(), script),
                 "input.unknown" to Fallback()
         ))
     })
