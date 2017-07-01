@@ -52,6 +52,12 @@ class Fallback : Action {
             apiAi.setContext(context.name, 1)
         }
 
+        val location = apiAi.getContexts().firstOrNull { context -> context.name.startsWith("in_") }
+
+        if (location == null) {
+            apiAi.setContext("in_cave_1", 1)
+        }
+
         apiAi.ask("I don't understand. Why don't you try looking around?")
     }
 }
