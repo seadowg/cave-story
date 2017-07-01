@@ -1,83 +1,87 @@
+import com.seadowg.cavestory.apiai.Action
+import com.seadowg.cavestory.apiai.ApiAi
+import com.seadowg.cavestory.apiai.Context
+import com.seadowg.cavestory.engine.Operation
+import com.seadowg.cavestory.engine.Room
+import com.seadowg.cavestory.rooms.*
+
 external fun require(module:String):dynamic
 external val process: dynamic = definedExternally
 
-val express = require("express")
-val apiAiApp = require("actions-on-google").ApiAiApp
+class JSApiAiWrapper(private val jsApiAiApp: dynamic) : ApiAi {
 
-fun main(args: Array<String>) {
-    val caveStory = { request: dynamic, response: dynamic ->
+    override fun handleRequest(actionMap: Map<String, Action>) {
+        val jsMap = js("new Map()")
 
-        val setState = { app: dynamic, location: String, prompt: String ->
-            app.setContext("in_" + location, 1)
-            app.ask(prompt)
+        actionMap.forEach { entry ->
+            jsMap.set(entry.key, { passedApp: dynamic ->
+                entry.value.handle(JSApiAiWrapper(passedApp))
+            })
         }
 
-        val cave1 = { app: dynamic ->
-            val action = app.getArgument("action")
-            val thing = app.getArgument("thing")
-
-            if (action == "look around" && thing == null) {
-                setState(app, "cave_1", "The cave is very dark but you can make out some small rocks " +
-                        "scattered around the floor. Behind you you can just make out some light in " +
-                        "the distance. You can also here the sound of running water in the opposite direction")
-            } else if (action == "move" && thing == "light") {
-                setState(app, "cave_1", "You run over to the light hoping to find a way out of the cave but " +
-                        "you find a shaft of light descending from a roof that must be 30 or 40 foot up. How are you going " +
-                        "to get out of here?")
-            } else if (action == "pick up" && thing == "rock") {
-                app.setContext("bag_contains_rock", 1)
-                setState(app, "cave_1", "You pick up a rock and put in your bag.")
-            } else if (action == "move" && thing == "water") {
-                setState(app, "waterfall", "You walk towards the sound of water. You walk through a narrow tunnel for several " +
-                        "minutes and then emerge in a large chamber with a giant waterfall.")
-            } else {
-                setState(app, "cave_1", "You try that and it doesn\'t work.")
-            }
-        }
-
-        val waterfall = { app: dynamic ->
-            val action = app.getArgument("action")
-            val thing = app.getArgument("thing")
-
-            if (action == "look around" && thing == null) {
-                setState(app, "waterfall", "Oh look a waterfall!");
-            } else if (action == "wash" && thing == "waterfall") {
-                setState(app, "waterfall", "You emerge from the waterfall sparkling clean. This changes nothing.");
-            } else {
-                setState(app, "waterfall", "You try that and it doesn\'t work.");
-            }
-        }
-
-        val fallback = { app: dynamic ->
-            app.getContexts().forEach { context ->
-                app.setContext(context.name, 1)
-            }
-
-            app.ask("I don't understand. Why don't you try looking around?")
-        }
-
-        val app = js("new apiAiApp({ request: request, response: response })")
-        val actionMap = js("new Map()")
-
-        actionMap.set("cave_1", cave1);
-        actionMap.set("waterfall", waterfall);
-        actionMap.set("input.unknown", fallback);
-
-        app.handleRequest(actionMap)
+        jsApiAiApp.handleRequest(jsMap)
     }
 
-    bootServer(caveStory)
+    override fun getArgument(name: String): String? {
+        return jsApiAiApp.getArgument(name) as String?
+    }
+
+    override fun getContexts(): List<Context> {
+        val contexts = mutableListOf<Context>()
+
+        jsApiAiApp.getContexts().forEach { context ->
+            contexts.add(Context(context.name))
+        }
+
+        return contexts
+    }
+
+    override fun ask(text: String) {
+        jsApiAiApp.ask(text)
+    }
+
+    override fun setContext(name: String, requestsToLive: Int) {
+        jsApiAiApp.setContext(name, requestsToLive)
+    }
 }
 
-fun bootServer(function: (dynamic, dynamic) -> Unit) {
-    val httpApp = express()
+class Fallback : Action {
+    override fun handle(apiAi: ApiAi) {
+        apiAi.getContexts().forEach { context ->
+            apiAi.setContext(context.name, 1)
+        }
 
-    val bodyParser = require("body-parser")
-    httpApp.use(bodyParser.json())
+        apiAi.ask("I don't understand. Why don't you try looking around?")
+    }
+}
+
+class RoomAction(private val room: Room): Action {
+    override fun handle(apiAi: ApiAi) {
+        val nextState = room.perform(Operation(
+                apiAi.getArgument("action")!!,
+                apiAi.getArgument("thing")
+        ))
+
+        apiAi.setContext("in_" + nextState.room.name, 1)
+        apiAi.ask(nextState.prompt)
+    }
+}
+
+fun main(args: Array<String>) {
+    val httpApp = require("express")()
+    httpApp.use(require("body-parser").json())
 
     httpApp.post("/", { req, res ->
-        function(req, res)
+        val JSApiAiApp = require("actions-on-google").ApiAiApp
+        val app = JSApiAiWrapper(js("new JSApiAiApp({ request: req, response: res })"))
+
+        app.handleRequest(mapOf(
+                "cave_1" to RoomAction(Cave1()),
+                "waterfall" to RoomAction(Waterfall()),
+                "input.unknown" to Fallback()
+        ))
     })
 
     httpApp.listen(process.env.PORT)
 }
+
