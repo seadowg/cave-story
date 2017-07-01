@@ -1,4 +1,4 @@
-package com.seadowg.cavestory
+package com.seadowg.cavestory.engine
 
 class Script {
     val ohLookAWaterfall = "Oh look a waterfall!"

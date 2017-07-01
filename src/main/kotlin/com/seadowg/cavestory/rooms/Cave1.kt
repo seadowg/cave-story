@@ -1,6 +1,6 @@
 package com.seadowg.cavestory.rooms
 
-import com.seadowg.cavestory.Script
+import com.seadowg.cavestory.engine.Script
 import com.seadowg.cavestory.engine.Operation
 import com.seadowg.cavestory.engine.Room
 import com.seadowg.cavestory.engine.State

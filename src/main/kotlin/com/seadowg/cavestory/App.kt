@@ -1,78 +1,12 @@
-import com.seadowg.cavestory.Script
+import com.seadowg.cavestory.ROOMS
 import com.seadowg.cavestory.apiai.Action
-import com.seadowg.cavestory.apiai.ApiAi
-import com.seadowg.cavestory.apiai.Context
-import com.seadowg.cavestory.engine.Operation
-import com.seadowg.cavestory.engine.Room
-import com.seadowg.cavestory.rooms.*
+import com.seadowg.cavestory.endpoint.Fallback
+import com.seadowg.cavestory.endpoint.RoomAction
+import com.seadowg.cavestory.engine.Script
+import com.seadowg.cavestory.js.JSApiAiWrapper
 
 external fun require(module:String):dynamic
 external val process: dynamic = definedExternally
-
-class JSApiAiWrapper(private val jsApiAiApp: dynamic) : ApiAi {
-
-    override fun handleRequest(actionMap: Map<String, Action>) {
-        val jsMap = js("new Map()")
-
-        actionMap.forEach { entry ->
-            jsMap.set(entry.key, { passedApp: dynamic ->
-                entry.value.handle(JSApiAiWrapper(passedApp))
-            })
-        }
-
-        jsApiAiApp.handleRequest(jsMap)
-    }
-
-    override fun getArgument(name: String): String? {
-        return jsApiAiApp.getArgument(name) as String?
-    }
-
-    override fun getContexts(): List<Context> {
-        val contexts = mutableListOf<Context>()
-
-        jsApiAiApp.getContexts().forEach { context ->
-            contexts.add(Context(context.name))
-        }
-
-        return contexts
-    }
-
-    override fun ask(text: String) {
-        jsApiAiApp.ask(text)
-    }
-
-    override fun setContext(name: String, requestsToLive: Int) {
-        jsApiAiApp.setContext(name, requestsToLive)
-    }
-}
-
-class Fallback : Action {
-    override fun handle(apiAi: ApiAi) {
-        apiAi.getContexts().forEach { context ->
-            apiAi.setContext(context.name, 1)
-        }
-
-        val location = apiAi.getContexts().firstOrNull { context -> context.name.startsWith("in_") }
-
-        if (location == null) {
-            apiAi.setContext("in_cave_1", 1)
-        }
-
-        apiAi.ask("I don't understand. Why don't you try looking around?")
-    }
-}
-
-class RoomAction(private val room: Room, private val script: Script): Action {
-    override fun handle(apiAi: ApiAi) {
-        val nextState = room.perform(Operation(
-                apiAi.getArgument("action")!!,
-                apiAi.getArgument("thing")
-        ), script)
-
-        apiAi.setContext("in_" + nextState.room.name, 1)
-        apiAi.ask(nextState.prompt)
-    }
-}
 
 fun main(args: Array<String>) {
     val httpApp = require("express")()
@@ -83,12 +17,13 @@ fun main(args: Array<String>) {
         val app = JSApiAiWrapper(js("new JSApiAiApp({ request: req, response: res })"))
 
         val script = Script()
-
-        app.handleRequest(mapOf(
-                "cave_1" to RoomAction(Cave1(), script),
-                "waterfall" to RoomAction(Waterfall(), script),
+        val actionMap = hashMapOf<String, Action>(
                 "input.unknown" to Fallback()
-        ))
+        )
+
+        ROOMS.forEach { actionMap.put(it.name, RoomAction(it, script)) }
+
+        app.handleRequest(actionMap)
     })
 
     httpApp.listen(process.env.PORT)
