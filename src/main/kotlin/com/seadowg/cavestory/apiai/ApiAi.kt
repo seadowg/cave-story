@@ -8,3 +8,13 @@ interface ApiAi {
     fun handleRequest(actionMap: Map<String, Action>)
 }
 
+class ApiAiParams(private val apiAi: ApiAi) : Params {
+    override fun getArgument(name: String): String? {
+        return apiAi.getArgument(name)
+    }
+}
+
+interface Params {
+    fun getArgument(name: String): String?
+}
+

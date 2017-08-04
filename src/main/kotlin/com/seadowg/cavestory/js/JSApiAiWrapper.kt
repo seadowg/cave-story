@@ -1,8 +1,6 @@
 package com.seadowg.cavestory.js
 
-import com.seadowg.cavestory.apiai.Action
-import com.seadowg.cavestory.apiai.ApiAi
-import com.seadowg.cavestory.apiai.Context
+import com.seadowg.cavestory.apiai.*
 
 class JSApiAiWrapper(private val jsApiAiApp: dynamic) : ApiAi {
 
@@ -11,7 +9,14 @@ class JSApiAiWrapper(private val jsApiAiApp: dynamic) : ApiAi {
 
         actionMap.forEach { entry ->
             jsMap.set(entry.key, { passedApp: dynamic ->
-                entry.value.handle(JSApiAiWrapper(passedApp))
+                val request = Request(ApiAiParams(this), this.getContexts())
+                val response = entry.value.handle(request)
+
+                response.contexts.forEach { context ->
+                    this.setContext(context.name, context.requestsToLive)
+                }
+
+                this.ask(response.prompt)
             })
         }
 
@@ -26,7 +31,7 @@ class JSApiAiWrapper(private val jsApiAiApp: dynamic) : ApiAi {
         val contexts = mutableListOf<Context>()
 
         jsApiAiApp.getContexts().forEach { context ->
-            contexts.add(Context(context.name))
+            contexts.add(Context(context.name, context.lifespan))
         }
 
         return contexts
