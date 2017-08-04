@@ -1,7 +1,5 @@
-import com.seadowg.cavestory.ROOMS
-import com.seadowg.cavestory.apiai.Action
 import com.seadowg.cavestory.endpoint.Fallback
-import com.seadowg.cavestory.endpoint.RoomAction
+import com.seadowg.cavestory.endpoint.PerformAction
 import com.seadowg.cavestory.engine.Script
 import com.seadowg.cavestory.js.JSApiAiWrapper
 
@@ -17,11 +15,10 @@ fun main(args: Array<String>) {
         val app = JSApiAiWrapper(js("new JSApiAiApp({ request: req, response: res })"))
 
         val script = Script()
-        val actionMap = hashMapOf<String, Action>(
+        val actionMap = hashMapOf(
+                "perform_action" to PerformAction(script),
                 "input.unknown" to Fallback()
         )
-
-        ROOMS.forEach { actionMap.put(it.name, RoomAction(it, script)) }
 
         app.handleRequest(actionMap)
     })
