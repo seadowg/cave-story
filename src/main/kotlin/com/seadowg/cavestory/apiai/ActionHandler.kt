@@ -1,5 +1,5 @@
 package com.seadowg.cavestory.apiai
 
-interface Action {
+interface ActionHandler {
     fun handle(request: Request): Response
 }

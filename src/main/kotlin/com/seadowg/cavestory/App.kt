@@ -1,5 +1,5 @@
-import com.seadowg.cavestory.endpoint.Fallback
-import com.seadowg.cavestory.endpoint.PerformAction
+import com.seadowg.cavestory.handler.Fallback
+import com.seadowg.cavestory.handler.Perform
 import com.seadowg.cavestory.engine.Script
 import com.seadowg.cavestory.js.JSApiAiWrapper
 
@@ -16,7 +16,7 @@ fun main(args: Array<String>) {
 
         val script = Script()
         val actionMap = hashMapOf(
-                "perform_action" to PerformAction(script),
+                "perform_action" to Perform(script),
                 "input.unknown" to Fallback()
         )
 

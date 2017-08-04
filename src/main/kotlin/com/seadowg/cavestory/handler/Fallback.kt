@@ -1,10 +1,10 @@
-package com.seadowg.cavestory.endpoint
+package com.seadowg.cavestory.handler
 
 import com.seadowg.cavestory.apiai.Context
 import com.seadowg.cavestory.apiai.Request
 import com.seadowg.cavestory.apiai.Response
 
-class Fallback : com.seadowg.cavestory.apiai.Action {
+class Fallback : com.seadowg.cavestory.apiai.ActionHandler {
     override fun handle(request: Request): Response {
         val location = request.contexts.firstOrNull { context -> context.name.startsWith("in_") }
 

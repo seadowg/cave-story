@@ -2,12 +2,12 @@ package com.seadowg.cavestory.js
 
 import com.seadowg.cavestory.apiai.*
 
-class JSApiAiWrapper(private val jsApiAiApp: dynamic) : ApiAi {
+class JSApiAiWrapper(private val jsApiAiApp: dynamic) {
 
-    override fun handleRequest(actionMap: Map<String, Action>) {
+    fun handleRequest(actionHandlerMap: Map<String, ActionHandler>) {
         val jsMap = js("new Map()")
 
-        actionMap.forEach { entry ->
+        actionHandlerMap.forEach { entry ->
             jsMap.set(entry.key, { passedApp: dynamic ->
                 val request = Request(ApiAiParams(this), this.getContexts())
                 val response = entry.value.handle(request)
@@ -23,11 +23,11 @@ class JSApiAiWrapper(private val jsApiAiApp: dynamic) : ApiAi {
         jsApiAiApp.handleRequest(jsMap)
     }
 
-    override fun getArgument(name: String): String? {
+    fun getArgument(name: String): String? {
         return jsApiAiApp.getArgument(name) as String?
     }
 
-    override fun getContexts(): List<Context> {
+    fun getContexts(): List<Context> {
         val contexts = mutableListOf<Context>()
 
         jsApiAiApp.getContexts().forEach { context ->
@@ -37,11 +37,17 @@ class JSApiAiWrapper(private val jsApiAiApp: dynamic) : ApiAi {
         return contexts
     }
 
-    override fun ask(text: String) {
+    fun ask(text: String) {
         jsApiAiApp.ask(text)
     }
 
-    override fun setContext(name: String, requestsToLive: Int) {
+    fun setContext(name: String, requestsToLive: Int) {
         jsApiAiApp.setContext(name, requestsToLive)
+    }
+}
+
+class ApiAiParams(private val apiAi: JSApiAiWrapper) : Params {
+    override fun getArgument(name: String): String? {
+        return apiAi.getArgument(name)
     }
 }
