@@ -13,12 +13,14 @@ fun main(args: Array<String>) {
 }
 
 class App {
+    private var server: Server = SparkServer()
+
     fun run() {
-        bootServer(SparkServer(), JvmSystemPort(), Script())
+        bootServer(server, JvmSystemPort(), Script())
     }
 
     fun kill() {
-
+        server.shutdown()
     }
 
     private fun bootServer(server: Server, envPort: EnvPort, script: Script) {

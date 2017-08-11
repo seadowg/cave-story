@@ -1,0 +1,48 @@
+{
+  "id": "request-id",
+  "timestamp": "2017-08-11T16:25:08.457Z",
+  "lang": "en",
+  "result": {
+    "source": "agent",
+    "resolvedQuery": "yabadabadoo",
+    "action": "input.unknown",
+    "actionIncomplete": false,
+    "parameters": {},
+    "contexts": [
+      {
+        "name": "in_waterfall",
+        "parameters": {},
+        "lifespan": 1
+      }
+    ],
+    "metadata": {
+      "intentId": "intent-id",
+      "webhookUsed": "true",
+      "webhookForSlotFillingUsed": "false",
+      "webhookResponseTime": 162,
+      "intentName": "Default Fallback Intent"
+    },
+    "fulfillment": {
+      "speech": "I don't understand. Why don't you try looking around?",
+      "messages": [
+        {
+          "type": 0,
+          "speech": "I don't understand. Why don't you try looking around?"
+        }
+      ],
+      "data": {
+        "google": {
+          "expect_user_response": true,
+          "is_ssml": false,
+          "no_input_prompts": []
+        }
+      }
+    },
+    "score": 1
+  },
+  "status": {
+    "code": 200,
+    "errorType": "success"
+  },
+  "sessionId": "session-id"
+}
