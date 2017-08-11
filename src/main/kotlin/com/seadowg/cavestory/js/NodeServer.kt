@@ -9,7 +9,10 @@ class NodeServer : Server {
 
     override fun serve(port: Int, actionHandlers: Map<String, ActionHandler>) {
         val httpApp = require("express")()
+        val morganBody = require("morgan-body")
+
         httpApp.use(require("body-parser").json())
+        morganBody(httpApp)
 
         httpApp.post("/", { req, res ->
             val JSApiAiApp = require("actions-on-google").ApiAiApp

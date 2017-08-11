@@ -12,6 +12,7 @@
     "actions-on-google": "^1.0.0",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
-    "kotlin": "^1.1.0"
+    "kotlin": "^1.1.0",
+    "morgan-body": "^0.10.5"
   }
 }
