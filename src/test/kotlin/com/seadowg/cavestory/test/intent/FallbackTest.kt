@@ -1,4 +1,4 @@
-package com.seadowg.cavestory.test
+package com.seadowg.cavestory.test.intent
 
 import com.jayway.jsonpath.JsonPath
 import com.seadowg.cavestory.App

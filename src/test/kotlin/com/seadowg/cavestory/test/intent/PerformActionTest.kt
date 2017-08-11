@@ -1,4 +1,4 @@
-package com.seadowg.cavestory.test
+package com.seadowg.cavestory.test.intent
 
 import com.jayway.jsonpath.JsonPath
 import org.junit.After
@@ -9,9 +9,7 @@ import com.seadowg.cavestory.engine.Script
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.*
-import okio.Okio
 import okio.Okio.*
 import org.assertj.core.api.Assertions.assertThat
 
