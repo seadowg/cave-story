@@ -10,7 +10,7 @@ class Cave1 : Room {
     override val name = "cave_1"
 
     override fun perform(operation: Operation, script: Script): State {
-        return if (operation.action == "look around" && operation.thing == null) {
+        return if (operation.action == "look around" && operation.thing.isNullOrBlank()) {
             State(this, script.theCaveIsVeryDark)
         } else if (operation.action == "move" && operation.thing == "light") {
             State(this, script.youRunToTheLight)

@@ -62,3 +62,5 @@ build/
 node/
 *.iml
 .idea/
+out/
+build/

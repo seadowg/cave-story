@@ -1,24 +1,37 @@
 buildscript {
-  ext.kotlin_version = '1.1.2'
+    ext.kotlin_version = '1.1.3-2'
+    ext.kotlin_version = '1.1.2'
     repositories {
-      mavenCentral()
+        mavenCentral()
     }
-  dependencies {
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-  }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
 }
 
-apply plugin: 'kotlin2js'
+apply plugin: 'kotlin'
 
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-  compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+    testCompile 'com.squareup.okhttp3:mockwebserver:3.8.1'
+    testCompile 'junit:junit:4.12'
+    testCompile 'com.jayway.jsonpath:json-path:2.3.0'
+    compile 'com.squareup.okhttp3:okhttp:3.8.1'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "com.sparkjava:spark-kotlin:1.0.0-alpha"
+    testCompile 'org.assertj:assertj-core:3.8.0'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
 }
-
-compileKotlin2Js.kotlinOptions {
-  moduleKind = "commonjs"
-  outputFile = "node/app.js"
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }

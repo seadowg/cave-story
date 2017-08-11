@@ -1,0 +1,43 @@
+{
+  "id": "request-id",
+  "timestamp": "2017-08-11T15:09:10.93Z",
+  "lang": "en",
+  "result": {
+    "source": "agent",
+    "resolvedQuery": "look around",
+    "speech": "",
+    "action": "perform_action",
+    "actionIncomplete": false,
+    "parameters": {
+      "action": "look around",
+      "thing": ""
+    },
+    "contexts": [
+      {
+        "name": "in_cave_1",
+        "lifespan": 0
+      }
+    ],
+    "metadata": {
+      "intentId": "intent-id",
+      "webhookUsed": "true",
+      "webhookForSlotFillingUsed": "false",
+      "intentName": "perform_action"
+    },
+    "fulfillment": {
+      "speech": "",
+      "messages": [
+        {
+          "type": 0,
+          "speech": ""
+        }
+      ]
+    },
+    "score": 1
+  },
+  "status": {
+    "code": 200,
+    "errorType": "success"
+  },
+  "sessionId": "session-id"
+}
