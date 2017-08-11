@@ -9,6 +9,7 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import okio.Okio
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -39,11 +40,16 @@ class FallbackTest {
                 .url("http://localhost:8080")
                 .build()
 
-        val responseString = OkHttpClient().newCall(request).execute().body()!!.string()
+        val rawResponse = OkHttpClient().newCall(request).execute()
+
+        assertThat(rawResponse.code()).isEqualTo(200)
+        assertThat(rawResponse.header("Content-Type")).isEqualTo("application/json")
+
+        val responseString = rawResponse.body()!!.string()
         val response = JsonPath.parse(responseString)
 
-        Assertions.assertThat(response.read<String>("$.speech")).isEqualTo("I don't understand. Why don't you try looking around?")
-        Assertions.assertThat(response.read<String>("$.contextOut[0].name")).isEqualTo("in_waterfall")
-        Assertions.assertThat(response.read<Int>("$.contextOut[0].lifespan")).isEqualTo(1)
+        assertThat(response.read<String>("$.speech")).isEqualTo("I don't understand. Why don't you try looking around?")
+        assertThat(response.read<String>("$.contextOut[0].name")).isEqualTo("in_waterfall")
+        assertThat(response.read<Int>("$.contextOut[0].lifespan")).isEqualTo(1)
     }
 }

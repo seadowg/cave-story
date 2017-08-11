@@ -18,6 +18,7 @@ class SparkServer : Server {
             val apiAiRequest = Request(MapParams(jsonRequest.result.parameters), jsonRequest.result.contexts.map { Context(it.name, it.lifespan) })
             val apiAiResponse = actionHandlers[jsonRequest.result.action]!!.handle(apiAiRequest)
 
+            response.header("Content-Type", "application/json")
             gson.toJson(JsonResponse(apiAiResponse.prompt, apiAiResponse.contexts.map { JsonContext(it.name, it.requestsToLive) }))
         }
     }

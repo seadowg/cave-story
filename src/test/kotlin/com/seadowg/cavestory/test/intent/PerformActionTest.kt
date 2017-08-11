@@ -39,7 +39,12 @@ class PerformActionTest {
                 .url("http://localhost:8080")
                 .build()
 
-        val responseString = OkHttpClient().newCall(request).execute().body()!!.string()
+        val rawResponse = OkHttpClient().newCall(request).execute()
+
+        assertThat(rawResponse.code()).isEqualTo(200)
+        assertThat(rawResponse.header("Content-Type")).isEqualTo("application/json")
+
+        val responseString = rawResponse.body()!!.string()
         val response = JsonPath.parse(responseString)
 
         assertThat(response.read<String>("$.speech")).isEqualTo(script.theCaveIsVeryDark)
