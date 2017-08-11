@@ -1,5 +1,5 @@
 ---
 applications:
 - name: cave-story
-  command: node node/app.js
-  buildpack: nodejs_buildpack
+  buildpack: java_buildpack
+  path: build/distributions/cave_story.zip
