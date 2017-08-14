@@ -31,7 +31,7 @@ class PerformActionTest {
 
     @Test
     fun test() {
-        val requestStream = this.javaClass.getResourceAsStream("/fixtures/look_around_request.json")
+        val requestStream = this.javaClass.getResourceAsStream("/fixtures/pick_up_rock_request.json")
         val requestJSON = buffer(source(requestStream)).readUtf8()
 
         val request = Request.Builder()
@@ -47,7 +47,7 @@ class PerformActionTest {
         val responseString = rawResponse.body()!!.string()
         val response = JsonPath.parse(responseString)
 
-        assertThat(response.read<String>("$.speech")).isEqualTo(script.theCaveIsVeryDark)
+        assertThat(response.read<String>("$.speech")).isEqualTo(script.youPickUpTheRock)
         assertThat(response.read<String>("$.contextOut[0].name")).isEqualTo("in_cave_1")
         assertThat(response.read<Int>("$.contextOut[0].lifespan")).isEqualTo(1)
     }

@@ -2,14 +2,12 @@ package com.seadowg.cavestory.test.intent
 
 import com.jayway.jsonpath.JsonPath
 import com.seadowg.cavestory.App
-import com.seadowg.cavestory.engine.Script
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okio.Okio
-import org.assertj.core.api.Assertions
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -17,7 +15,6 @@ import org.junit.Test
 class FallbackTest {
 
     private var app: App? = null
-    private val script = Script()
 
     @Before
     fun setup() {

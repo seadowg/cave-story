@@ -6,33 +6,29 @@ import spark.kotlin.Http
 import spark.kotlin.ignite
 
 class SparkServer : Server {
+
     private var http: Http? = null
 
     override fun serve(port: Int, actionHandlers: Map<String, ActionHandler>) {
-        http = ignite().port(port)
+        val spark = ignite().port(port)
 
-        http?.post("/") {
+        spark.post("/") {
             val gson = Gson()
             val jsonRequest = gson.fromJson(request.body(), JsonRequest::class.java)
 
-            val apiAiRequest = Request(MapParams(jsonRequest.result.parameters), jsonRequest.result.contexts.map { Context(it.name, it.lifespan) })
+            val apiAiRequest = Request(jsonRequest.result.parameters, jsonRequest.result.contexts.map { Context(it.name, it.lifespan) })
             val apiAiResponse = actionHandlers[jsonRequest.result.action]!!.handle(apiAiRequest)
 
             response.header("Content-Type", "application/json")
             gson.toJson(JsonResponse(apiAiResponse.prompt, apiAiResponse.contexts.map { JsonContext(it.name, it.requestsToLive) }))
         }
+
+        http = spark
     }
 
     override fun shutdown() {
         http?.stop()
     }
-}
-
-private class MapParams(private val map: Map<String, String>) : Params {
-    override fun getArgument(name: String): String? {
-        return map[name]
-    }
-
 }
 
 private data class JsonContext(val name: String, val lifespan: Int)

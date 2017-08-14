@@ -4,13 +4,13 @@
   "lang": "en",
   "result": {
     "source": "agent",
-    "resolvedQuery": "look around",
+    "resolvedQuery": "pick up rock",
     "speech": "",
     "action": "perform_action",
     "actionIncomplete": false,
     "parameters": {
-      "action": "look around",
-      "thing": ""
+      "action": "pick up",
+      "thing": "rock"
     },
     "contexts": [
       {
