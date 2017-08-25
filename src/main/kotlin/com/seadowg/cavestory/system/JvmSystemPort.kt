@@ -1,9 +1,7 @@
-package com.seadowg.cavestory.jvm
+package com.seadowg.cavestory.system
 
-import com.seadowg.cavestory.system.EnvPort
-
-class JvmSystemPort : EnvPort {
-    override fun get(): Int {
+class JvmSystemPort {
+    fun get(): Int {
         return try {
             Integer.parseInt(System.getenv("PORT"))
         } catch (e: NumberFormatException) {
