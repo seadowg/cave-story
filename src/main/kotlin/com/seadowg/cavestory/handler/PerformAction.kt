@@ -1,12 +1,12 @@
 package com.seadowg.cavestory.handler
 
-import com.seadowg.cavestory.apiai.ActionHandler
-import com.seadowg.cavestory.apiai.Context
-import com.seadowg.cavestory.apiai.Request
-import com.seadowg.cavestory.apiai.Response
 import com.seadowg.cavestory.engine.Operation
 import com.seadowg.cavestory.engine.Room
 import com.seadowg.cavestory.engine.Script
+import com.seadowg.dave.ActionHandler
+import com.seadowg.dave.Context
+import com.seadowg.dave.Request
+import com.seadowg.dave.Response
 
 class PerformAction(private val script: Script, private val rooms: List<Room> = emptyList()) : ActionHandler {
     override fun handle(request: Request): Response {
